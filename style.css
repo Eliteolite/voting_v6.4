@@ -1,101 +1,99 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
 :root {
-  /* Neutral Palette */
-  --bg-deep: #020617;        /* Deepest background */
-  --card-surface: #1e293b;   /* Card background */
-  --card-border: #334155;    /* Subtle borders */
-  
-  /* Brand Colors */
-  --accent-blue: #38bdf8;    /* Action blue */
-  --accent-blue-hover: #0ea5e9;
-  --success-green: #10b981;  /* New contrast color for success */
-  
-  /* Text Palette */
-  --text-main: #f8fafc;      /* Titles */
-  --text-muted: #94a3b8;     /* Small text / Labels */
+  --primary: #38bdf8;
+  --primary-dark: #0ea5e9;
+  --bg-dark: #020617;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg-deep);
-  background-image: radial-gradient(at 0% 0%, hsla(215,98%,61%,0.07) 0, transparent 50%), 
-                    radial-gradient(at 50% 0%, hsla(225,39%,30%,0.1) 0, transparent 50%);
+  background: radial-gradient(circle at top, #1e293b, #020617);
   color: var(--text-main);
   min-height: 100vh;
 }
 
-/* CONTAINER */
-.container { max-width: 650px; margin: 0 auto; padding: 40px 20px; }
+.container { max-width: 600px; margin: 0 auto; padding: 40px 20px; text-align: center; }
 
-/* REFINED CARDS */
+header { margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+header h1 { font-size: 2rem; color: var(--primary); letter-spacing: -1px; }
+header p { color: var(--text-muted); font-size: 0.9rem; }
+
 .card {
-  background: var(--card-surface);
-  border: 1px solid var(--card-border);
-  padding: 30px;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 35px;
   border-radius: 20px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* TITLES & TEXT */
-h1, h2 { color: var(--text-main); font-weight: 700; letter-spacing: -0.025em; }
-p { color: var(--text-muted); font-size: 0.95rem; }
-
-/* INPUTS (Darker, recessed look) */
+/* Formal Input Fields */
 input[type="text"], input[type="password"] {
     width: 100%;
-    padding: 14px;
-    background: #0f172a; /* Recessed look */
-    border: 1px solid var(--card-border);
+    padding: 16px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     color: white;
+    font-size: 1rem;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.3s;
 }
 
-input:focus { border-color: var(--accent-blue); }
+input:focus { border-color: var(--primary); }
 
-/* SELECTION OPTIONS (Breaking the Blue) */
+/* Option Cards */
 .option {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--card-border);
-  padding: 18px;
-  border-radius: 14px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  padding: 18px;
+  margin: 12px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  cursor: pointer;
   transition: all 0.2s;
 }
 
-.option:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--text-muted);
+.option:hover { border-color: var(--primary); background: rgba(56, 189, 248, 0.05); }
+
+/* Formal Radio Buttons */
+input[type="radio"] {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--text-muted);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
 }
 
-/* BUTTONS (The only place we use the bright blue) */
+input[type="radio"]:checked {
+    border-color: var(--primary);
+    background: var(--primary);
+    box-shadow: inset 0 0 0 4px #0f172a;
+}
+
 button {
-  background: var(--accent-blue);
-  color: #020617; /* Dark text on light button is more readable */
-  font-weight: 700;
+  width: 100%;
+  background: var(--primary);
+  color: #020617;
   border: none;
-  padding: 16px;
+  padding: 18px;
   border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s;
 }
 
-button:hover {
-  background: var(--accent-blue-hover);
-  transform: translateY(-2px);
-}
+button:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(56, 189, 248, 0.3); }
 
-/* SUCCESS TEXT (e.g. Winner in Admin) */
-.winner-text {
-    color: var(--success-green);
-    font-weight: 600;
-}
-
-footer { margin-top: 40px; color: var(--text-muted); font-size: 0.8rem; text-align: center; }
+footer { margin-top: 40px; color: var(--text-muted); font-size: 0.8rem; }

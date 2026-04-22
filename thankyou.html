@@ -38,18 +38,6 @@
             border-radius: 2px;
             overflow: hidden;
         }
-
-        .timer-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 100%;
-            animation: shrink 5s linear forwards;
-        }
-
-        @keyframes shrink {
-            from { width: 100%; }
-            to { width: 0%; }
-        }
     </style>
 </head>
 <body>
@@ -70,7 +58,7 @@
         <button onclick="window.location.href='index.html'" style="margin-top: 25px;">Back to Start</button>
 
         <div class="countdown">
-            Redirecting to home in <span id="seconds">5</span> seconds...
+            Redirecting to home in <span id="seconds">10</span> seconds...
             <div class="timer-bar">
                 <div class="timer-fill"></div>
             </div>
@@ -81,8 +69,8 @@
 </div>
 
 <script>
-    // Countdown Timer Logic
-    let timeLeft = 5;
+    // 10 Second Countdown Timer Logic
+    let timeLeft = 10;
     const timerElement = document.getElementById('seconds');
     
     const countdown = setInterval(() => {
@@ -94,9 +82,9 @@
         }
     }, 1000);
 
-    // Optional: Keep your original confetti function if you like it!
+    // Celebration Confetti
     function launchConfetti() {
-        for(let i=0; i<50; i++) {
+        for(let i=0; i<60; i++) {
             let div = document.createElement('div');
             div.style.position = 'fixed';
             div.style.width = '6px';
@@ -110,7 +98,6 @@
 
             let speed = Math.random() * 3 + 2;
             let sideWay = (Math.random() - 0.5) * 4;
-            let rotation = 0;
 
             function fall() {
                 let top = parseFloat(div.style.top);

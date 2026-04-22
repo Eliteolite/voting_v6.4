@@ -6,67 +6,55 @@
     <link rel="stylesheet" href="style.css">
     <style>
         .receipt-area {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px dashed rgba(56, 189, 248, 0.3);
-            border-radius: 12px;
-            padding: 20px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 10px 20px;
             margin: 20px 0;
-            text-align: left;
         }
         .confirm-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 15px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
         }
         .confirm-row:last-child { border-bottom: none; }
+        .pos-info { flex-grow: 1; padding-right: 15px; }
+        .pos-label { color: var(--primary); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .candidate-val { font-size: 1.1rem; font-weight: 600; color: #f8fafc; }
         
-        .pos-label { color: var(--primary); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; }
-        .candidate-val { font-size: 1.1rem; font-weight: 500; color: #f8fafc; }
-        
-        .edit-link {
-            color: var(--text-muted);
+        .edit-btn {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 6px 14px;
+            border-radius: 8px;
             font-size: 0.8rem;
-            text-decoration: underline;
+            font-weight: 600;
             cursor: pointer;
-            background: none;
-            border: none;
-            padding: 5px;
+            width: auto; /* Overrides global button width */
+            transition: all 0.2s;
         }
-        .edit-link:hover { color: var(--primary); }
-
-        .secure-footer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: #34d399; /* Green for trust */
-            font-size: 0.85rem;
-            margin-top: 15px;
-        }
+        .edit-btn:hover { background: var(--primary); color: #020617; }
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" style="max-width: 650px;">
     <header>
         <h1>NTIC - KANO</h1>
-        <p>Review & Finalize</p>
+        <p>Review Your Selection</p>
     </header>
 
     <div class="card">
-        <h2>Final Ballot Review</h2>
-        <p style="font-size: 0.9rem; color: var(--text-muted);">Please review your selections below before officially casting your vote.</p>
+        <h2 style="margin-bottom: 10px;">Digital Ballot</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Review each position. Use the edit button to make changes.</p>
         
-        <div class="receipt-area" id="receiptList">
-            </div>
+        <div class="receipt-area" id="receiptList"></div>
 
-        <div class="secure-footer">
-            <span>🔒 Encrypted & Secure Submission</span>
-        </div>
-
-        <button onclick="submitVote()" id="submitBtn" style="margin-top: 25px;">Cast Official Vote</button>
-        <button onclick="window.location.href='vote.html'" style="background:none; border:1px solid #334155; margin-top:10px;">Back to Voting</button>
+        <button onclick="submitVote()" id="submitBtn" style="margin-top: 20px;">Cast Official Vote</button>
+        <p style="margin-top: 15px; font-size: 0.8rem; color: #34d399;">🔒 Your vote is anonymous and secure</p>
     </div>
 
     <footer>© 2026 NTIC-KANO SRC Elections</footer>
@@ -74,43 +62,45 @@
 
 <script>
 const selections = JSON.parse(localStorage.getItem("selections") || "{}");
-const receiptList = document.getElementById("receiptList");
 
 function renderReceipt() {
     let html = "";
+    // We use the same order as defined in the positions list
     for (let pos in selections) {
         html += `
         <div class="confirm-row">
-            <div>
+            <div class="pos-info">
                 <div class="pos-label">${pos}</div>
                 <div class="candidate-val">${selections[pos]}</div>
             </div>
-            <button class="edit-link" onclick="goToEdit('${pos}')">Edit</button>
+            <button class="edit-btn" onclick="goToEdit('${pos}')">Edit</button>
         </div>`;
     }
-    receiptList.innerHTML = html;
+    document.getElementById("receiptList").innerHTML = html;
 }
 
 function goToEdit(posName) {
-    // We save the position name so vote.html knows to jump to it
     localStorage.setItem("jumpToPosition", posName);
+    localStorage.setItem("singleEditMode", "true"); 
     window.location.href = "vote.html";
 }
 
 function submitVote() {
     const btn = document.getElementById("submitBtn");
-    btn.innerText = "Processing Selection...";
+    btn.innerText = "Submitting...";
     btn.disabled = true;
-    btn.style.opacity = "0.7";
 
-    // Small delay to simulate "Security Processing" for user trust
-    setTimeout(() => {
-        let allVotes = JSON.parse(localStorage.getItem("allVotes") || "[]");
-        let voter = localStorage.getItem("currentVoter");
-        allVotes.push({voter: voter, selections: selections});
-        localStorage.setItem("allVotes", JSON.stringify(allVotes));
-        window.location.href = "thankyou.html";
-    }, 1200);
+    // Save to global storage
+    let allVotes = JSON.parse(localStorage.getItem("allVotes") || "[]");
+    let voter = localStorage.getItem("currentVoter");
+    allVotes.push({voter: voter, selections: selections});
+    localStorage.setItem("allVotes", JSON.stringify(allVotes));
+    
+    // Clear current session
+    localStorage.removeItem("selections");
+    localStorage.removeItem("currentVoter");
+    
+    window.location.href = "thankyou.html";
 }
 
 renderReceipt();

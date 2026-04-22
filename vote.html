@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cast Your Vote - NTIC</title>
+    <title>Vote - NTIC Elections</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
     <div class="card" id="votingCard">
         </div>
 
-    <footer>© 2026 NTIC-KANO. All rights reserved.</footer>
+    <footer>© 2026 NTIC-KANO SRC Elections</footer>
 </div>
 
 <script>
@@ -37,7 +37,7 @@ const positionKeys = Object.keys(positions);
 let currentIndex = 0;
 let selections = JSON.parse(localStorage.getItem("selections") || "{}");
 
-// JUMP & EDIT LOGIC
+// LOGIC FOR QUICK-EDIT
 const jumpTo = localStorage.getItem("jumpToPosition");
 const isSingleEdit = localStorage.getItem("singleEditMode") === "true";
 
@@ -50,37 +50,48 @@ function renderPosition() {
     const progressPercent = Math.round(((currentIndex) / positionKeys.length) * 100);
     
     let html = `
-        <div style="margin-bottom: 25px;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px;">
-                <span>${isSingleEdit ? 'Editing Selection' : 'Election Progress'}</span>
-                <span>${currentIndex + 1} of ${positionKeys.length}</span>
+        <div style="margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">
+                <span>${isSingleEdit ? 'QUICK EDIT MODE' : 'VOTING PROGRESS'}</span>
+                <span>${currentIndex + 1} OF ${positionKeys.length}</span>
             </div>
             <div style="width: 100%; background: #1e293b; height: 6px; border-radius: 10px; overflow: hidden;">
-                <div style="width: ${progressPercent}%; background: var(--primary); height: 100%; transition: width 0.4s;"></div>
+                <div style="width: ${progressPercent}%; background: var(--primary); height: 100%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);"></div>
             </div>
         </div>
         
-        <h2 style="margin-bottom: 25px; text-align: left;">${currentPos}</h2>
+        <h2 style="text-align: left; margin-bottom: 10px;">${currentPos}</h2>
+        <p style="text-align: left; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 25px;">Select one candidate from the list below.</p>
     `;
 
     positions[currentPos].forEach(name => {
         const isChecked = (selections[currentPos] === name) ? "checked" : "";
         html += `
-        <label class="option" style="display: flex; align-items: center; justify-content: space-between; padding: 18px; margin: 10px 0; background: rgba(255,255,255,0.03); border-radius: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05);">
-            <span style="font-size: 1.05rem; font-weight: 500;">${name}</span>
-            <input type="radio" name="candidate" value="${name}" ${isChecked} style="width: 22px; height: 22px; accent-color: var(--primary);">
+        <label class="option" onclick="handleCardClick(this)">
+            <span style="font-size: 1.1rem; font-weight: 500;">${name}</span>
+            <input type="radio" name="candidate" value="${name}" ${isChecked}>
         </label>`;
     });
 
-    const btnText = isSingleEdit ? "Save & Return to Review" : (currentIndex === positionKeys.length - 1 ? "Review Ballot" : "Continue");
+    const btnText = isSingleEdit ? "Save & Return to Summary" : (currentIndex === positionKeys.length - 1 ? "Review My Ballot" : "Continue to Next");
     
     html += `<button onclick="next()" style="margin-top: 20px;">${btnText}</button>`;
     document.getElementById("votingCard").innerHTML = html;
 }
 
+// Visual feedback when clicking the card itself
+function handleCardClick(el) {
+    document.querySelectorAll('.option').forEach(opt => opt.style.borderColor = 'rgba(255,255,255,0.08)');
+    el.style.borderColor = 'var(--primary)';
+    el.querySelector('input').checked = true;
+}
+
 function next() {
     const selected = document.querySelector('input[name="candidate"]:checked');
-    if (!selected) { alert("Please select a candidate to proceed."); return; }
+    if (!selected) {
+        alert("Please make a selection to continue.");
+        return;
+    }
     
     selections[positionKeys[currentIndex]] = selected.value;
     localStorage.setItem("selections", JSON.stringify(selections));

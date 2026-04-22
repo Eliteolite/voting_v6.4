@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Verify Ballot - NTIC</title>
+    <title>Review Your Ballot - NTIC</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Suggestion 1: Audit Trail / Ballot ID Styling */
         .ballot-header {
             display: flex;
             justify-content: space-between;
@@ -34,13 +33,22 @@
         .confirm-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 18px 0;
+            align-items: center; /* Ensures vertical centering */
+            padding: 20px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: left;
         }
-        .confirm-row:last-child { border-bottom: none; }
         
+        /* FIX: Ensure the row elements don't intrude */
+        .pos-info { 
+            flex: 1; 
+            min-width: 0; /* Prevents text overflow */
+            padding-right: 20px; 
+        }
+        
+        .action-area {
+            flex-shrink: 0; /* Keeps the button from shrinking */
+        }
+
         .pos-label { 
             color: var(--primary);
             font-size: 0.85rem;
@@ -54,9 +62,11 @@
         .candidate-val { 
             font-size: 1.1rem;
             color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        /* Warning Text Styling */
         .final-warning {
             background: rgba(251, 113, 133, 0.1);
             border: 1px solid rgba(251, 113, 133, 0.2);
@@ -69,14 +79,13 @@
             font-weight: 500;
         }
 
-        /* Suggestion 2: Micro-interaction button state */
         .edit-btn {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-muted);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 14px;
+            padding: 8px 16px;
             border-radius: 8px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -87,7 +96,7 @@
 <div class="container" style="max-width: 650px;">
     <header>
         <h1>NTIC - KANO</h1>
-        <p>Ballot Verification</p>
+        <p>Review Your Selection</p>
     </header>
 
     <div class="card">
@@ -96,7 +105,7 @@
             <span class="ballot-id" id="ballotToken">GENERATING...</span>
         </div>
 
-        <h2 style="margin-bottom: 10px; text-align: left;">Verify Your Selection</h2>
+        <h2 style="margin-bottom: 10px; text-align: left;">Review Your Selection</h2>
         
         <div class="receipt-area" id="receiptList"></div>
 
@@ -104,7 +113,7 @@
             ⚠️ Note: Once you click submit, your choices are final and cannot be changed.
         </div>
 
-        <button onclick="submitVote()" id="submitBtn" style="margin-top: 20px;">Confirm & Submit Ballot</button>
+        <button onclick="submitVote()" id="submitBtn" style="margin-top: 20px;">Cast My Final Vote</button>
     </div>
 
     <footer>© 2026 NTIC-KANO SRC Elections</footer>
@@ -113,7 +122,6 @@
 <script>
 const selections = JSON.parse(localStorage.getItem("selections") || "{}");
 
-// Generate a random Ballot ID for Suggestion 1
 function generateToken() {
     const chars = "ABCDEF0123456789";
     let token = "TX-";
@@ -132,40 +140,34 @@ function renderReceipt() {
                 <span class="pos-label">${pos}</span>
                 <div class="candidate-val">${selections[pos]}</div>
             </div>
-            <button class="edit-btn" onclick="goToEdit(this, '${pos}')">Change</button>
+            <div class="action-area">
+                <button class="edit-btn" onclick="goToEdit(this, '${pos}')">Change</button>
+            </div>
         </div>`;
     }
     document.getElementById("receiptList").innerHTML = html;
 }
 
-// Suggestion 2: Micro-interaction for the Change button
 function goToEdit(btn, posName) {
     btn.innerText = "Opening...";
     btn.style.opacity = "0.7";
     localStorage.setItem("jumpToPosition", posName);
     localStorage.setItem("singleEditMode", "true"); 
-    
-    // Tiny delay to show the "Opening..." state
-    setTimeout(() => {
-        window.location.href = "vote.html";
-    }, 400);
+    setTimeout(() => { window.location.href = "vote.html"; }, 400);
 }
 
 function submitVote() {
     const btn = document.getElementById("submitBtn");
-    btn.innerText = "Encrypting & Storing...";
+    btn.innerText = "Cast My Final Vote...";
     btn.disabled = true;
-    btn.style.background = "#1e293b";
 
     setTimeout(() => {
         let allVotes = JSON.parse(localStorage.getItem("allVotes") || "[]");
         let voter = localStorage.getItem("currentVoter");
         allVotes.push({voter: voter, selections: selections, timestamp: new Date()});
         localStorage.setItem("allVotes", JSON.stringify(allVotes));
-        
         localStorage.removeItem("selections");
         localStorage.removeItem("currentVoter");
-        
         window.location.href = "thankyou.html";
     }, 1200);
 }

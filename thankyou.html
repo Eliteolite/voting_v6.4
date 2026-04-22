@@ -2,187 +2,170 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Review Your Ballot - NTIC</title>
+    <title>Thank You - NTIC</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .ballot-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .ballot-id {
-            font-family: 'Courier New', Courier, monospace;
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
-
-        .receipt-area {
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 10px 20px;
-            margin-bottom: 20px;
-        }
-        
-        .confirm-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .pos-info { flex: 1; min-width: 0; text-align: left; }
-        .action-area { flex-shrink: 0; padding-left: 20px; }
-
-        .pos-label { 
-            color: var(--primary);
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-bottom: 4px;
-            display: block;
-        }
-
-        .candidate-val { 
-            font-size: 1.15rem;
-            color: #f8fafc;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .final-warning {
-            background: rgba(251, 113, 133, 0.1);
-            border: 1px solid rgba(251, 113, 133, 0.2);
-            color: #fb7185;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            margin-top: 20px;
+        .thank-you-card {
+            padding: 60px 40px;
             text-align: center;
-            font-weight: 500;
+            margin-top: 10vh;
         }
 
-        .edit-btn {
-            background: rgba(255, 255, 255, 0.05);
+        .success-icon {
+            font-size: 4rem;
+            color: #34d399;
+            margin-bottom: 30px;
+            display: block;
+            animation: pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .sub-text {
+            font-weight: 300;
+            font-size: 1.1rem;
+            line-height: 1.8;
             color: var(--text-muted);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            cursor: pointer;
+            max-width: 400px;
+            margin: 0 auto 40px;
+        }
+
+        .countdown-container {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #seconds {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .timer-bar {
+            width: 100%;
+            max-width: 300px;
+            height: 4px;
+            background: rgba(255,255,255,0.05);
+            margin: 15px auto 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .home-btn {
+            display: inline-block;
+            width: auto;
+            min-width: 200px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-main);
+            margin-top: 20px;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
             transition: all 0.2s;
         }
-        .edit-btn:hover { background: var(--primary); color: #020617; }
+
+        .home-btn:hover {
+            background: var(--primary);
+            color: #020617;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
-<div class="container" style="max-width: 650px;">
-    <header>
-        <h1>NTIC - KANO</h1>
-        <p>Review Your Selection</p>
-    </header>
-
-    <div class="card">
-        <div class="ballot-header">
-            <span style="font-size: 0.75rem; color: var(--text-muted);">VOTER SESSION TOKEN:</span>
-            <span class="ballot-id" id="ballotToken">GENERATING...</span>
-        </div>
-
-        <h2 style="margin-bottom: 10px; text-align: left;">Review Your Selection</h2>
+<div class="container">
+    <div class="card thank-you-card">
+        <span class="success-icon">✓</span>
         
-        <div class="receipt-area" id="receiptList"></div>
+        <h1>Vote Recorded!</h1>
+        
+        <p class="sub-text">
+            Your ballot has been successfully encrypted and added to the official tally for the 2026 SRC Elections.
+        </p>
 
-        <div class="final-warning">
-            ⚠️ Note: Once you click submit, your choices are final and cannot be changed.
+        <div style="background: rgba(56, 189, 248, 0.03); padding: 20px; border-radius: 12px; border: 1px dashed rgba(56, 189, 248, 0.2);">
+            <p style="font-size: 0.8rem; color: var(--primary); text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Session Status</p>
+            <p style="font-size: 0.9rem; margin-top: 5px;">Your identity has been logged out for security.</p>
         </div>
 
-        <button onclick="submitVote()" id="submitBtn" style="margin-top: 25px;">Cast My Final Vote</button>
+        <button class="home-btn" onclick="window.location.href='index.html'">Return to Home Now</button>
+
+        <div class="countdown-container">
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Auto-redirecting in <span id="seconds">10</span> seconds
+            </p>
+            <div class="timer-bar">
+                <div class="timer-fill" style="animation-duration: 10s;"></div>
+            </div>
+        </div>
     </div>
 
-    <footer>© 2026 NTIC-KANO SRC Elections</footer>
+    <footer style="margin-top: 60px;">© 2026 NTIC-KANO SRC Elections</footer>
 </div>
 
 <script>
-const selections = JSON.parse(localStorage.getItem("selections") || "{}");
+    // Timer Logic
+    let timeLeft = 10;
+    const timerElement = document.getElementById('seconds');
+    const countdown = setInterval(() => {
+        timeLeft--;
+        timerElement.innerText = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            window.location.href = 'index.html';
+        }
+    }, 1000);
 
-function generateToken() {
-    const chars = "ABCDEF0123456789";
-    let token = "TX-";
-    for(let i=0; i<6; i++) {
-        token += chars.charAt(Math.floor(Math.random() * chars.length));
+    // Celebration Confetti Logic
+    function launchConfetti() {
+        for(let i=0; i<80; i++) {
+            let div = document.createElement('div');
+            div.style.position = 'fixed';
+            div.style.width = Math.random() * 8 + 4 + 'px';
+            div.style.height = div.style.width;
+            div.style.background = 'hsl(' + Math.random() * 360 + ', 100%, 50%)';
+            div.style.top = '-20px';
+            div.style.left = Math.random() * 100 + '%';
+            div.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            div.style.zIndex = '9999';
+            div.style.pointerEvents = 'none';
+            document.body.appendChild(div);
+
+            let speed = Math.random() * 4 + 3;
+            let sideWay = (Math.random() - 0.5) * 6;
+            let rotation = Math.random() * 360;
+
+            function fall() {
+                let top = parseFloat(div.style.top);
+                let left = parseFloat(div.style.left);
+                if (top < window.innerHeight) {
+                    div.style.top = (top + speed) + 'px';
+                    div.style.left = (left + sideWay) + 'px';
+                    div.style.transform = `rotate(${rotation}deg)`;
+                    rotation += 5;
+                    requestAnimationFrame(fall);
+                } else {
+                    div.remove();
+                }
+            }
+            fall();
+        }
     }
-    document.getElementById("ballotToken").innerText = token;
-}
 
-function renderReceipt() {
-    let html = "";
-    for (let pos in selections) {
-        html += `
-        <div class="confirm-row">
-            <div class="pos-info">
-                <span class="pos-label">${pos}</span>
-                <div class="candidate-val">${selections[pos]}</div>
-            </div>
-            <div class="action-area">
-                <button class="edit-btn" onclick="goToEdit(this, '${pos}')">Change</button>
-            </div>
-        </div>`;
-    }
-    document.getElementById("receiptList").innerHTML = html;
-}
-
-function goToEdit(btn, posName) {
-    btn.innerText = "Opening...";
-    btn.style.opacity = "0.7";
-    localStorage.setItem("jumpToPosition", posName);
-    localStorage.setItem("singleEditMode", "true"); 
-    setTimeout(() => { window.location.href = "vote.html"; }, 400);
-}
-
-async function submitVote() {
-    const btn = document.getElementById("submitBtn");
-    btn.innerText = "Cast My Final Vote...";
-    btn.disabled = true;
-
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkCp9J4GfAKK2GAyXKBo9suNhrL69ycyiq1dvDZ8iRY2WcTWrJ9ViGI9fJsGsQFVeT9Q/exec";
-
-    const payload = {
-        voter: localStorage.getItem("currentVoter") || "Anonymous",
-        selections: selections
-    };
-
-    try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-            method: "POST",
-            mode: "no-cors",
-            cache: "no-cache",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        localStorage.removeItem("selections");
-        localStorage.removeItem("currentVoter");
-        window.location.href = "thankyou.html";
-
-    } catch (error) {
-        console.error("Submission failed:", error);
-        alert("Submission failed. Please check your internet connection.");
-        btn.innerText = "Cast My Final Vote";
-        btn.disabled = false;
-    }
-}
-
-generateToken();
-renderReceipt();
+    // Launch confetti on load
+    window.onload = launchConfetti;
 </script>
 </body>
 </html>

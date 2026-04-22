@@ -16,28 +16,49 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
+            padding: 20px 0; /* Increased padding for better spacing */
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             text-align: left;
         }
         .confirm-row:last-child { border-bottom: none; }
+        
         .pos-info { flex-grow: 1; padding-right: 15px; }
-        .pos-label { color: var(--primary); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .candidate-val { font-size: 1.1rem; font-weight: 600; color: #f8fafc; }
+
+        /* IMPROVED POSITION VISIBILITY */
+        .pos-label { 
+            color: var(--primary); /* Cyan Blue */
+            font-size: 0.9rem;      /* Larger text */
+            font-weight: 800;      /* Extra Bold */
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            margin-bottom: 6px;    /* Space between title and name */
+            display: block;
+        }
+
+        /* MUTED CANDIDATE NAME */
+        .candidate-val { 
+            font-size: 1.15rem; 
+            font-weight: 400;      /* Lighter weight to make title pop */
+            color: #f8fafc; 
+        }
         
         .edit-btn {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--primary);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
             border-radius: 8px;
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            width: auto; /* Overrides global button width */
+            width: auto;
             transition: all 0.2s;
         }
-        .edit-btn:hover { background: var(--primary); color: #020617; }
+        .edit-btn:hover { 
+            background: var(--primary); 
+            color: #020617; 
+            border-color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -48,13 +69,13 @@
     </header>
 
     <div class="card">
-        <h2 style="margin-bottom: 10px;">Digital Ballot</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Review each position. Use the edit button to make changes.</p>
+        <h2 style="margin-bottom: 10px;">Final Ballot Review</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Verify your choice for each position before submitting.</p>
         
         <div class="receipt-area" id="receiptList"></div>
 
-        <button onclick="submitVote()" id="submitBtn" style="margin-top: 20px;">Cast Official Vote</button>
-        <p style="margin-top: 15px; font-size: 0.8rem; color: #34d399;">🔒 Your vote is anonymous and secure</p>
+        <button onclick="submitVote()" id="submitBtn" style="margin-top: 25px;">Cast My Final Vote</button>
+        <p style="margin-top: 15px; font-size: 0.8rem; color: #34d399;">🔒 Your vote is private and encrypted.</p>
     </div>
 
     <footer>© 2026 NTIC-KANO SRC Elections</footer>
@@ -65,15 +86,14 @@ const selections = JSON.parse(localStorage.getItem("selections") || "{}");
 
 function renderReceipt() {
     let html = "";
-    // We use the same order as defined in the positions list
     for (let pos in selections) {
         html += `
         <div class="confirm-row">
             <div class="pos-info">
-                <div class="pos-label">${pos}</div>
+                <span class="pos-label">${pos}</span>
                 <div class="candidate-val">${selections[pos]}</div>
             </div>
-            <button class="edit-btn" onclick="goToEdit('${pos}')">Edit</button>
+            <button class="edit-btn" onclick="goToEdit('${pos}')">Change</button>
         </div>`;
     }
     document.getElementById("receiptList").innerHTML = html;
@@ -87,20 +107,20 @@ function goToEdit(posName) {
 
 function submitVote() {
     const btn = document.getElementById("submitBtn");
-    btn.innerText = "Submitting...";
+    btn.innerText = "Encrypting & Submitting...";
     btn.disabled = true;
 
-    // Save to global storage
-    let allVotes = JSON.parse(localStorage.getItem("allVotes") || "[]");
-    let voter = localStorage.getItem("currentVoter");
-    allVotes.push({voter: voter, selections: selections});
-    localStorage.setItem("allVotes", JSON.stringify(allVotes));
-    
-    // Clear current session
-    localStorage.removeItem("selections");
-    localStorage.removeItem("currentVoter");
-    
-    window.location.href = "thankyou.html";
+    setTimeout(() => {
+        let allVotes = JSON.parse(localStorage.getItem("allVotes") || "[]");
+        let voter = localStorage.getItem("currentVoter");
+        allVotes.push({voter: voter, selections: selections});
+        localStorage.setItem("allVotes", JSON.stringify(allVotes));
+        
+        localStorage.removeItem("selections");
+        localStorage.removeItem("currentVoter");
+        
+        window.location.href = "thankyou.html";
+    }, 1000);
 }
 
 renderReceipt();

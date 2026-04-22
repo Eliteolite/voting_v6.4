@@ -1,117 +1,101 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
 :root {
-  --primary: #38bdf8;
-  --primary-dark: #0ea5e9;
-  --bg-dark: #020617;
-  --card-bg: rgba(30, 41, 59, 0.5);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --error: #fb7185;
+  /* Neutral Palette */
+  --bg-deep: #020617;        /* Deepest background */
+  --card-surface: #1e293b;   /* Card background */
+  --card-border: #334155;    /* Subtle borders */
+  
+  /* Brand Colors */
+  --accent-blue: #38bdf8;    /* Action blue */
+  --accent-blue-hover: #0ea5e9;
+  --success-green: #10b981;  /* New contrast color for success */
+  
+  /* Text Palette */
+  --text-main: #f8fafc;      /* Titles */
+  --text-muted: #94a3b8;     /* Small text / Labels */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Inter', sans-serif;
-  background: radial-gradient(circle at top, #1e293b, #020617);
+  background-color: var(--bg-deep);
+  background-image: radial-gradient(at 0% 0%, hsla(215,98%,61%,0.07) 0, transparent 50%), 
+                    radial-gradient(at 50% 0%, hsla(225,39%,30%,0.1) 0, transparent 50%);
   color: var(--text-main);
-  line-height: 1.6;
   min-height: 100vh;
 }
 
-.container { max-width: 600px; margin: 0 auto; padding: 40px 20px; text-align: center; }
+/* CONTAINER */
+.container { max-width: 650px; margin: 0 auto; padding: 40px 20px; }
 
-header { margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
-header h1 { font-size: 2rem; color: var(--primary); letter-spacing: -1px; }
-header p { color: var(--text-muted); font-size: 0.9rem; }
-
+/* REFINED CARDS */
 .card {
-  background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 35px;
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  background: var(--card-surface);
+  border: 1px solid var(--card-border);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
-/* INPUT STYLING */
+/* TITLES & TEXT */
+h1, h2 { color: var(--text-main); font-weight: 700; letter-spacing: -0.025em; }
+p { color: var(--text-muted); font-size: 0.95rem; }
+
+/* INPUTS (Darker, recessed look) */
 input[type="text"], input[type="password"] {
     width: 100%;
-    padding: 16px;
-    background: rgba(15, 23, 42, 0.8);
-    border: 2px solid rgba(255, 255, 255, 0.05);
-    border-radius: 14px;
+    padding: 14px;
+    background: #0f172a; /* Recessed look */
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
     color: white;
-    font-size: 1rem;
-    transition: all 0.3s ease;
     outline: none;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-    margin-bottom: 5px;
+    transition: border-color 0.2s;
 }
 
-input[type="text"]:focus {
-    border-color: var(--primary);
-    background: rgba(15, 23, 42, 1);
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
-}
+input:focus { border-color: var(--accent-blue); }
 
-/* CANDIDATE OPTION CARDS */
+/* SELECTION OPTIONS (Breaking the Blue) */
 .option {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
+  padding: 18px;
+  border-radius: 14px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 20px;
-  margin: 14px 0;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  align-items: center;
+  margin-bottom: 12px;
+  transition: all 0.2s;
 }
 
 .option:hover {
-  background: rgba(56, 189, 248, 0.05);
-  border-color: rgba(56, 189, 248, 0.4);
-  transform: scale(1.01);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-muted);
 }
 
-/* PREMIUM RADIO BUTTONS */
-input[type="radio"] {
-    appearance: none;
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--text-muted);
-    border-radius: 50%;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s;
-}
-
-input[type="radio"]:checked {
-    border-color: var(--primary);
-    background: var(--primary);
-    box-shadow: inset 0 0 0 4px #0f172a; /* Creates the "donut" look */
-}
-
+/* BUTTONS (The only place we use the bright blue) */
 button {
-  width: 100%;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: #020617;
-  border: none;
-  padding: 18px;
-  border-radius: 14px;
+  background: var(--accent-blue);
+  color: #020617; /* Dark text on light button is more readable */
   font-weight: 700;
-  font-size: 1rem;
+  border: none;
+  padding: 16px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 15px;
+  transition: transform 0.2s, background 0.2s;
 }
 
 button:hover {
+  background: var(--accent-blue-hover);
   transform: translateY(-2px);
-  box-shadow: 0 12px 20px -5px rgba(56, 189, 248, 0.5);
-  filter: brightness(1.1);
 }
 
-footer { margin-top: 40px; color: var(--text-muted); font-size: 0.8rem; opacity: 0.7; }
+/* SUCCESS TEXT (e.g. Winner in Admin) */
+.winner-text {
+    color: var(--success-green);
+    font-weight: 600;
+}
+
+footer { margin-top: 40px; color: var(--text-muted); font-size: 0.8rem; text-align: center; }

@@ -48,7 +48,7 @@ input[type="text"], input[type="password"] {
 
 input:focus { border-color: var(--primary); }
 
-/* Option Cards */
+/* Option Cards for Vote Page */
 .option {
   display: flex;
   align-items: center;
@@ -64,7 +64,7 @@ input:focus { border-color: var(--primary); }
 
 .option:hover { border-color: var(--primary); background: rgba(56, 189, 248, 0.05); }
 
-/* Formal Radio Buttons */
+/* Radio Buttons */
 input[type="radio"] {
     appearance: none;
     width: 22px;
@@ -72,7 +72,6 @@ input[type="radio"] {
     border: 2px solid var(--text-muted);
     border-radius: 50%;
     cursor: pointer;
-    position: relative;
 }
 
 input[type="radio"]:checked {

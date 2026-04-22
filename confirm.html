@@ -2,80 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Review Your Ballot - NTIC</title>
+    <title>Verify Ballot - NTIC</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Suggestion 1: Audit Trail / Ballot ID Styling */
+        .ballot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .ballot-id {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
         .receipt-area {
             background: rgba(15, 23, 42, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 10px 20px;
-            margin: 20px 0;
+            margin-bottom: 20px;
         }
+        
         .confirm-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0; /* Increased padding for better spacing */
+            padding: 18px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             text-align: left;
         }
         .confirm-row:last-child { border-bottom: none; }
         
-        .pos-info { flex-grow: 1; padding-right: 15px; }
-
-        /* IMPROVED POSITION VISIBILITY */
         .pos-label { 
-            color: var(--primary); /* Cyan Blue */
-            font-size: 0.9rem;      /* Larger text */
-            font-weight: 800;      /* Extra Bold */
-            text-transform: uppercase; 
-            letter-spacing: 1.5px; 
-            margin-bottom: 6px;    /* Space between title and name */
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 4px;
             display: block;
         }
 
-        /* MUTED CANDIDATE NAME */
         .candidate-val { 
-            font-size: 1.15rem; 
-            font-weight: 400;      /* Lighter weight to make title pop */
-            color: #f8fafc; 
+            font-size: 1.1rem;
+            color: #f8fafc;
         }
         
+        /* Warning Text Styling */
+        .final-warning {
+            background: rgba(251, 113, 133, 0.1);
+            border: 1px solid rgba(251, 113, 133, 0.2);
+            color: #fb7185;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Suggestion 2: Micro-interaction button state */
         .edit-btn {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-muted);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.75rem;
             cursor: pointer;
-            width: auto;
             transition: all 0.2s;
         }
-        .edit-btn:hover { 
-            background: var(--primary); 
-            color: #020617; 
-            border-color: var(--primary);
-        }
+        .edit-btn:hover { background: var(--primary); color: #020617; }
     </style>
 </head>
 <body>
 <div class="container" style="max-width: 650px;">
     <header>
         <h1>NTIC - KANO</h1>
-        <p>Review Your Selection</p>
+        <p>Ballot Verification</p>
     </header>
 
     <div class="card">
-        <h2 style="margin-bottom: 10px;">Final Ballot Review</h2>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Verify your choice for each position before submitting.</p>
+        <div class="ballot-header">
+            <span style="font-size: 0.75rem; color: var(--text-muted);">VOTER SESSION TOKEN:</span>
+            <span class="ballot-id" id="ballotToken">GENERATING...</span>
+        </div>
+
+        <h2 style="margin-bottom: 10px; text-align: left;">Verify Your Selection</h2>
         
         <div class="receipt-area" id="receiptList"></div>
 
-        <button onclick="submitVote()" id="submitBtn" style="margin-top: 25px;">Cast My Final Vote</button>
-        <p style="margin-top: 15px; font-size: 0.8rem; color: #34d399;">🔒 Your vote is private and encrypted.</p>
+        <div class="final-warning">
+            ⚠️ Note: Once you click submit, your choices are final and cannot be changed.
+        </div>
+
+        <button onclick="submitVote()" id="submitBtn" style="margin-top: 20px;">Confirm & Submit Ballot</button>
     </div>
 
     <footer>© 2026 NTIC-KANO SRC Elections</footer>
@@ -83,6 +112,16 @@
 
 <script>
 const selections = JSON.parse(localStorage.getItem("selections") || "{}");
+
+// Generate a random Ballot ID for Suggestion 1
+function generateToken() {
+    const chars = "ABCDEF0123456789";
+    let token = "TX-";
+    for(let i=0; i<6; i++) {
+        token += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById("ballotToken").innerText = token;
+}
 
 function renderReceipt() {
     let html = "";
@@ -93,36 +132,45 @@ function renderReceipt() {
                 <span class="pos-label">${pos}</span>
                 <div class="candidate-val">${selections[pos]}</div>
             </div>
-            <button class="edit-btn" onclick="goToEdit('${pos}')">Change</button>
+            <button class="edit-btn" onclick="goToEdit(this, '${pos}')">Change</button>
         </div>`;
     }
     document.getElementById("receiptList").innerHTML = html;
 }
 
-function goToEdit(posName) {
+// Suggestion 2: Micro-interaction for the Change button
+function goToEdit(btn, posName) {
+    btn.innerText = "Opening...";
+    btn.style.opacity = "0.7";
     localStorage.setItem("jumpToPosition", posName);
     localStorage.setItem("singleEditMode", "true"); 
-    window.location.href = "vote.html";
+    
+    // Tiny delay to show the "Opening..." state
+    setTimeout(() => {
+        window.location.href = "vote.html";
+    }, 400);
 }
 
 function submitVote() {
     const btn = document.getElementById("submitBtn");
-    btn.innerText = "Encrypting & Submitting...";
+    btn.innerText = "Encrypting & Storing...";
     btn.disabled = true;
+    btn.style.background = "#1e293b";
 
     setTimeout(() => {
         let allVotes = JSON.parse(localStorage.getItem("allVotes") || "[]");
         let voter = localStorage.getItem("currentVoter");
-        allVotes.push({voter: voter, selections: selections});
+        allVotes.push({voter: voter, selections: selections, timestamp: new Date()});
         localStorage.setItem("allVotes", JSON.stringify(allVotes));
         
         localStorage.removeItem("selections");
         localStorage.removeItem("currentVoter");
         
         window.location.href = "thankyou.html";
-    }, 1000);
+    }, 1200);
 }
 
+generateToken();
 renderReceipt();
 </script>
 </body>

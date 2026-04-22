@@ -2,77 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vote Recorded - NTIC</title>
+    <title>Thank You - NTIC</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .success-checkmark {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            background: rgba(52, 211, 153, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Targeted Typography & Layout Adjustments */
+        .thank-you-card {
+            padding: 60px 40px; /* Increased inner margin */
+            text-align: center;
+            margin-top: 10vh;   /* Vertical centering */
+        }
+
+        .success-icon {
+            font-size: 4rem;
             color: #34d399;
-            font-size: 2.5rem;
-            animation: pop 0.5s cubic-bezier(0.26, 0.53, 0.74, 1.48);
+            margin-bottom: 30px; /* Margin for breathing room */
+            display: block;
         }
 
-        @keyframes pop {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        h1 {
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
         }
 
-        .countdown {
-            margin-top: 30px;
-            font-size: 0.85rem;
+        .sub-text {
+            font-weight: 300;
+            font-size: 1.1rem;
+            line-height: 1.8;
             color: var(--text-muted);
+            max-width: 400px;
+            margin: 0 auto 40px; /* Centering the text block */
+        }
+
+        .countdown-container {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #seconds {
+            font-family: 'Courier New', Courier, monospace; /* Prevents text jitter */
+            font-weight: bold;
+            color: var(--primary);
         }
 
         .timer-bar {
             width: 100%;
+            max-width: 300px; /* Narrower bar looks more elegant */
             height: 4px;
-            background: #1e293b;
-            margin-top: 10px;
-            border-radius: 2px;
+            background: rgba(255,255,255,0.05);
+            margin: 15px auto 0;
+            border-radius: 10px;
             overflow: hidden;
         }
     </style>
 </head>
 <body>
-<div class="container" style="max-width: 500px; margin-top: 15vh;">
-    <div class="card">
-        <div class="success-checkmark">✓</div>
+<div class="container">
+    <div class="card thank-you-card">
+        <span class="success-icon">✓</span>
         
-        <h1 style="margin-bottom: 10px; color: #f8fafc;">Vote Submitted!</h1>
-        <p style="color: var(--text-muted); line-height: 1.6;">
-            Thank you for participating in the 2026 SRC Elections. Your choices have been encrypted and recorded successfully.
+        <h1>Vote Recorded!</h1>
+        
+        <p class="sub-text">
+            Your ballot has been successfully encrypted and added to the official tally for the 2026 SRC Elections.
         </p>
 
-        <div style="background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 12px; margin-top: 25px;">
-            <p style="color: var(--primary); font-size: 0.8rem; font-weight: 600;">SESSION SECURE</p>
-            <p style="font-size: 0.85rem;">You have been logged out. The portal is ready for the next voter.</p>
+        <div style="background: rgba(56, 189, 248, 0.03); padding: 20px; border-radius: 12px; border: 1px dashed rgba(56, 189, 248, 0.2);">
+            <p style="font-size: 0.8rem; color: var(--primary); text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Session Status</p>
+            <p style="font-size: 0.9rem; margin-top: 5px;">Your identity has been logged out for security.</p>
         </div>
 
-        <button onclick="window.location.href='index.html'" style="margin-top: 25px;">Back to Start</button>
-
-        <div class="countdown">
-            Redirecting to home in <span id="seconds">10</span> seconds...
+        <div class="countdown-container">
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+                Redirecting to home in <span id="seconds">10</span> seconds
+            </p>
             <div class="timer-bar">
-                <div class="timer-fill"></div>
+                <div class="timer-fill" style="animation-duration: 10s;"></div>
             </div>
         </div>
     </div>
 
-    <footer>© 2026 NTIC-KANO. All rights reserved.</footer>
+    <footer style="margin-top: 60px;">© 2026 NTIC-KANO SRC Elections</footer>
 </div>
 
 <script>
-    // 10 Second Countdown Timer Logic
+    // Timer Logic
     let timeLeft = 10;
     const timerElement = document.getElementById('seconds');
-    
     const countdown = setInterval(() => {
         timeLeft--;
         timerElement.innerText = timeLeft;
@@ -81,39 +99,6 @@
             window.location.href = 'index.html';
         }
     }, 1000);
-
-    // Celebration Confetti
-    function launchConfetti() {
-        for(let i=0; i<60; i++) {
-            let div = document.createElement('div');
-            div.style.position = 'fixed';
-            div.style.width = '6px';
-            div.style.height = '6px';
-            div.style.background = 'hsl(' + Math.random() * 360 + ', 100%, 50%)';
-            div.style.top = '-10px';
-            div.style.left = Math.random() * 100 + '%';
-            div.style.borderRadius = '50%';
-            div.style.zIndex = '999';
-            document.body.appendChild(div);
-
-            let speed = Math.random() * 3 + 2;
-            let sideWay = (Math.random() - 0.5) * 4;
-
-            function fall() {
-                let top = parseFloat(div.style.top);
-                let left = parseFloat(div.style.left);
-                if (top < window.innerHeight) {
-                    div.style.top = (top + speed) + 'px';
-                    div.style.left = (left + sideWay) + 'px';
-                    requestAnimationFrame(fall);
-                } else {
-                    div.remove();
-                }
-            }
-            fall();
-        }
-    }
-    launchConfetti();
 </script>
 </body>
 </html>

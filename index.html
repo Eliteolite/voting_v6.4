@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>Login - NTIC Voting</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <header><h1>NTIC - KANO</h1><p>Official SRC Election Portal</p></header>
+    <div class="card">
+        <h2>Student Access</h2>
+        <input type="text" id="studentId" placeholder="Enter Student ID (e.g. NTIC001)">
+        <button onclick="startVoting()">Verify & Start</button>
+        <p id="error" style="color: #f87171; margin-top: 15px; font-size: 0.9rem;"></p>
+    </div>
+    <footer>© 2026 NTIC-KANO SRC Elections</footer>
+</div>
+<script>
+function startVoting(){
+    const id = document.getElementById("studentId").value.trim();
+    if(!id){document.getElementById("error").innerText="ID is required to proceed"; return;}
+    localStorage.setItem("currentVoter", id);
+    window.location.href="vote.html";
+}
+</script>
+</body>
+</html>

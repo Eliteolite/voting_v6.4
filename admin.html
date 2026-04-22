@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container" style="max-width: 900px;">
+    <header><h1>Admin Panel</h1><p>Live Election Statistics</p></header>
+    <div id="dash" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;"></div>
+</div>
+<script>
+// Mock login check for demo (use your existing PASSWORD check logic)
+const votes = JSON.parse(localStorage.getItem("allVotes") || "[]");
+const dash = document.getElementById("dash");
+
+if(votes.length === 0) dash.innerHTML = "<div class='card'><h2>No votes cast yet.</h2></div>";
+else {
+    const posKeys = Object.keys(votes[0].selections);
+    posKeys.forEach(p => {
+        let counts = {};
+        votes.forEach(v => { counts[v.selections[p]] = (counts[v.selections[p]] || 0) + 1; });
+        
+        let div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<h3>${p}</h3><canvas id="c-${p}"></canvas>`;
+        dash.appendChild(div);
+        
+        new Chart(document.getElementById(`c-${p}`), {
+            type: 'doughnut',
+            data: { 
+                labels: Object.keys(counts), 
+                datasets: [{ data: Object.values(counts), backgroundColor: ['#38bdf8', '#818cf8', '#fb7185', '#34d399'] }] 
+            },
+            options: { plugins: { legend: { labels: { color: 'white' } } } }
+        });
+    });
+}
+</script>
+</body>
+</html>

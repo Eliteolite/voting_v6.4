@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head><title>Cast Your Vote</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="container">
+    <header><h1>NTIC - KANO</h1><p>Step 1: Make Your Selections</p></header>
+    <div class="card" id="votingCard"></div>
+</div>
+<script>
+const positions = {"SRC Co-Leader": ["Kubura Mustapha", "Fatima Auwal Adam Sani", "Bilkisu Murtala"], "SRC Secretary": ["Bilkisu Dauda Suleiman", "Fatima Mamman Farafara", "Fatima Tsofo"], "Sports Captain": ["Favour Enewo Jimoh", "Candidate B"]};
+let keys = Object.keys(positions), idx = 0, selections = {};
+
+function render(){
+    let p = keys[idx];
+    let h = `<span style="color:var(--primary); font-size:0.8rem; text-transform:uppercase;">Position ${idx+1}/${keys.length}</span><h2>${p}</h2>`;
+    positions[p].forEach(n => {
+        h += `<label class="option"><input type="radio" name="c" value="${n}"><span>${n}</span></label>`;
+    });
+    h += `<button onclick="next()">Continue</button>`;
+    document.getElementById("votingCard").innerHTML = h;
+}
+
+function next(){
+    let s = document.querySelector('input[name="c"]:checked');
+    if(!s){ alert("Please select a candidate"); return; }
+    selections[keys[idx]] = s.value;
+    idx++;
+    if(idx < keys.length) render();
+    else { localStorage.setItem("selections", JSON.stringify(selections)); window.location.href="confirm.html"; }
+}
+render();
+</script>
+</body>
+</html>

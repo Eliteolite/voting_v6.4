@@ -33,20 +33,22 @@
         .confirm-row {
             display: flex;
             justify-content: space-between;
-            align-items: center; /* Ensures vertical centering */
+            align-items: center;
             padding: 20px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
+        .confirm-row:last-child { border-bottom: none; }
         
-        /* FIX: Ensure the row elements don't intrude */
+        /* Left Alignment Logic */
         .pos-info { 
             flex: 1; 
-            min-width: 0; /* Prevents text overflow */
-            padding-right: 20px; 
+            min-width: 0; 
+            text-align: left; /* Aligns all text inside to the left */
         }
         
         .action-area {
-            flex-shrink: 0; /* Keeps the button from shrinking */
+            flex-shrink: 0;
+            padding-left: 20px;
         }
 
         .pos-label { 
@@ -60,8 +62,10 @@
         }
 
         .candidate-val { 
-            font-size: 1.1rem;
+            font-size: 1.15rem;
+            font-weight: 400;
             color: #f8fafc;
+            /* Ensures name doesn't push the button away */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -113,7 +117,7 @@
             ⚠️ Note: Once you click submit, your choices are final and cannot be changed.
         </div>
 
-        <button onclick="submitVote()" id="submitBtn" style="margin-top: 20px;">Cast My Final Vote</button>
+        <button onclick="submitVote()" id="submitBtn" style="margin-top: 25px;">Cast My Final Vote</button>
     </div>
 
     <footer>© 2026 NTIC-KANO SRC Elections</footer>

@@ -1,34 +1,100 @@
 <!DOCTYPE html>
-<html>
-<head><title>Cast Your Vote</title><link rel="stylesheet" href="style.css"></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cast Your Vote - NTIC</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
 <div class="container">
-    <header><h1>NTIC - KANO</h1><p>Step 1: Make Your Selections</p></header>
-    <div class="card" id="votingCard"></div>
+    <header>
+        <h1>NTIC - KANO</h1>
+        <p>SRC Election Portal</p>
+    </header>
+
+    <div class="card" id="votingCard">
+        </div>
+
+    <footer>© 2026 NTIC-KANO. All rights reserved.</footer>
 </div>
+
 <script>
-const positions = {"SRC Co-Leader": ["Kubura Mustapha", "Fatima Auwal Adam Sani", "Bilkisu Murtala"], "SRC Secretary": ["Bilkisu Dauda Suleiman", "Fatima Mamman Farafara", "Fatima Tsofo"], "Sports Captain": ["Favour Enewo Jimoh", "Candidate B"]};
-let keys = Object.keys(positions), idx = 0, selections = {};
+// 1. Updated Positions and Candidate List
+const positions = {
+    "SRC Co-Leader": ["Kubura Mustapha", "Fatima Auwal Adam Sani", "Bilkisu Murtala"],
+    "SRC Assist. Co-Leader": ["Rihanna Ahmad Abdulwahab", "Zainab Ismail Mai-Adamu", "Cindy Fechi Ohuruzo"],
+    "Well-being Ambassador": ["Mufidah Nababa", "Ameerah Morenike Ibrahim", "Fatima Mai Hamza"],
+    "SRC Secretary": ["Bilkisu Dauda Suleiman", "Fatima Mamman Farafara", "Fatima Tsofo", "Amatullah Lawal", "Halima Abdulqadir"],
+    "Event Organizer": ["Yesmin Sadiq Bello", "Aisha Musta Ahmad", "Silakasi Nama Joshua", "Safiyta Bello Maiwada"],
+    "Sports Captain": ["Favour Enewo Jimoh"],
+    "Library Assistant": ["Zainab Mustapha", "Naila Sani", "Khadija Girgir", "Aisha Aliyu Musa"],
+    "Hostel Coordinator": ["Asma'u Bala Getso", "Amina Amina Uzairu", "Ummu Salma Kabir Lawal"],
+    "Dining Hall Coordinator": ["TBD - Candidate 1", "TBD - Candidate 2"], // Placeholders
+    "School Ameerah": ["Aisha Bilyameen Gebe", "Amatur-Rahman Abdulqadir"],
+    "School Sister": ["TBD - Candidate 1", "TBD - Candidate 2"] // Placeholders
+};
 
-function render(){
-    let p = keys[idx];
-    let h = `<span style="color:var(--primary); font-size:0.8rem; text-transform:uppercase;">Position ${idx+1}/${keys.length}</span><h2>${p}</h2>`;
-    positions[p].forEach(n => {
-        h += `<label class="option"><input type="radio" name="c" value="${n}"><span>${n}</span></label>`;
+let positionKeys = Object.keys(positions);
+let currentIndex = 0;
+let selections = {};
+
+function renderPosition() {
+    let currentPos = positionKeys[currentIndex];
+    
+    // 2. Progress Indicator Calculation
+    let progressPercent = Math.round(((currentIndex) / positionKeys.length) * 100);
+    
+    let html = `
+        <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px;">
+                <span>Progress</span>
+                <span>${currentIndex + 1} of ${positionKeys.length}</span>
+            </div>
+            <div style="width: 100%; background: #1e293b; height: 6px; border-radius: 10px; overflow: hidden;">
+                <div style="width: ${progressPercent}%; background: #38bdf8; height: 100%; transition: width 0.3s ease;"></div>
+            </div>
+        </div>
+        
+        <p style="color: #38bdf8; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Currently Voting For:</p>
+        <h2 style="margin-bottom: 25px;">${currentPos}</h2>
+    `;
+
+    // Render Candidate Options
+    positions[currentPos].forEach(name => {
+        html += `
+        <label class="option">
+            <input type="radio" name="candidate" value="${name}">
+            <span>${name}</span>
+        </label>`;
     });
-    h += `<button onclick="next()">Continue</button>`;
-    document.getElementById("votingCard").innerHTML = h;
+
+    html += `<button onclick="next()" style="margin-top: 20px;">Continue</button>`;
+    document.getElementById("votingCard").innerHTML = html;
 }
 
-function next(){
-    let s = document.querySelector('input[name="c"]:checked');
-    if(!s){ alert("Please select a candidate"); return; }
-    selections[keys[idx]] = s.value;
-    idx++;
-    if(idx < keys.length) render();
-    else { localStorage.setItem("selections", JSON.stringify(selections)); window.location.href="confirm.html"; }
+function next() {
+    let selected = document.querySelector('input[name="candidate"]:checked');
+    if (!selected) {
+        alert("Please select a candidate to proceed.");
+        return;
+    }
+    
+    // Save selection
+    selections[positionKeys[currentIndex]] = selected.value;
+    
+    currentIndex++;
+    
+    if (currentIndex < positionKeys.length) {
+        renderPosition();
+    } else {
+        // Save final selections to storage and move to confirmation
+        localStorage.setItem("selections", JSON.stringify(selections));
+        window.location.href = "confirm.html";
+    }
 }
-render();
+
+// Initial render
+renderPosition();
 </script>
 </body>
 </html>

@@ -1,28 +1,119 @@
 <!DOCTYPE html>
-<html>
-<head><title>Confirm Vote</title><link rel="stylesheet" href="style.css"></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Your Ballot - NTIC</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .receipt-area {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .confirm-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .confirm-row:last-child { border-bottom: none; }
+        
+        .pos-label { color: var(--primary); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; }
+        .candidate-val { font-size: 1.1rem; font-weight: 500; color: #f8fafc; }
+        
+        .edit-link {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+        .edit-link:hover { color: var(--primary); }
+
+        .secure-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #34d399; /* Green for trust */
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+    </style>
+</head>
 <body>
 <div class="container">
-    <header><h1>NTIC - KANO</h1><p>Step 2: Review Your Ballot</p></header>
-    <div class="card">
-        <h2>Confirm Selections</h2>
-        <div id="list" style="margin-bottom:20px;"></div>
-        <button onclick="submit()">Finalize & Submit</button>
-        <button onclick="history.back()" style="background:none; border:1px solid #334155; margin-top:10px;">Change Selections</button>
-    </div>
-</div>
-<script>
-const sel = JSON.parse(localStorage.getItem("selections") || "{}");
-let h = "";
-for(let k in sel) h += `<div style="text-align:left; padding:10px 0; border-bottom:1px solid #1e293b;"><small style="color:var(--primary)">${k}</small><div style="font-weight:600">${sel[k]}</div></div>`;
-document.getElementById("list").innerHTML = h;
+    <header>
+        <h1>NTIC - KANO</h1>
+        <p>Review & Finalize</p>
+    </header>
 
-function submit(){
-    let v = JSON.parse(localStorage.getItem("allVotes") || "[]");
-    v.push({voter: localStorage.getItem("currentVoter"), selections: sel});
-    localStorage.setItem("allVotes", JSON.stringify(v));
-    window.location.href="thankyou.html";
+    <div class="card">
+        <h2>Final Ballot Review</h2>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">Please review your selections below before officially casting your vote.</p>
+        
+        <div class="receipt-area" id="receiptList">
+            </div>
+
+        <div class="secure-footer">
+            <span>🔒 Encrypted & Secure Submission</span>
+        </div>
+
+        <button onclick="submitVote()" id="submitBtn" style="margin-top: 25px;">Cast Official Vote</button>
+        <button onclick="window.location.href='vote.html'" style="background:none; border:1px solid #334155; margin-top:10px;">Back to Voting</button>
+    </div>
+
+    <footer>© 2026 NTIC-KANO SRC Elections</footer>
+</div>
+
+<script>
+const selections = JSON.parse(localStorage.getItem("selections") || "{}");
+const receiptList = document.getElementById("receiptList");
+
+function renderReceipt() {
+    let html = "";
+    for (let pos in selections) {
+        html += `
+        <div class="confirm-row">
+            <div>
+                <div class="pos-label">${pos}</div>
+                <div class="candidate-val">${selections[pos]}</div>
+            </div>
+            <button class="edit-link" onclick="goToEdit('${pos}')">Edit</button>
+        </div>`;
+    }
+    receiptList.innerHTML = html;
 }
+
+function goToEdit(posName) {
+    // We save the position name so vote.html knows to jump to it
+    localStorage.setItem("jumpToPosition", posName);
+    window.location.href = "vote.html";
+}
+
+function submitVote() {
+    const btn = document.getElementById("submitBtn");
+    btn.innerText = "Processing Selection...";
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+
+    // Small delay to simulate "Security Processing" for user trust
+    setTimeout(() => {
+        let allVotes = JSON.parse(localStorage.getItem("allVotes") || "[]");
+        let voter = localStorage.getItem("currentVoter");
+        allVotes.push({voter: voter, selections: selections});
+        localStorage.setItem("allVotes", JSON.stringify(allVotes));
+        window.location.href = "thankyou.html";
+    }, 1200);
+}
+
+renderReceipt();
 </script>
 </body>
 </html>

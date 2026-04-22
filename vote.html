@@ -9,7 +9,7 @@
 <div class="container">
     <header>
         <h1>NTIC - KANO</h1>
-        <p>SRC Election Portal</p>
+        <p>Official SRC Election Portal</p>
     </header>
 
     <div class="card" id="votingCard">
@@ -19,7 +19,7 @@
 </div>
 
 <script>
-// 1. Updated Positions and Candidate List
+// 1. Full Candidate Database
 const positions = {
     "SRC Co-Leader": ["Kubura Mustapha", "Fatima Auwal Adam Sani", "Bilkisu Murtala"],
     "SRC Assist. Co-Leader": ["Rihanna Ahmad Abdulwahab", "Zainab Ismail Mai-Adamu", "Cindy Fechi Ohuruzo"],
@@ -29,71 +29,89 @@ const positions = {
     "Sports Captain": ["Favour Enewo Jimoh"],
     "Library Assistant": ["Zainab Mustapha", "Naila Sani", "Khadija Girgir", "Aisha Aliyu Musa"],
     "Hostel Coordinator": ["Asma'u Bala Getso", "Amina Amina Uzairu", "Ummu Salma Kabir Lawal"],
-    "Dining Hall Coordinator": ["TBD - Candidate 1", "TBD - Candidate 2"], // Placeholders
+    "Dining Hall Coordinator": ["TBD - Candidate 1", "TBD - Candidate 2"],
     "School Ameerah": ["Aisha Bilyameen Gebe", "Amatur-Rahman Abdulqadir"],
-    "School Sister": ["TBD - Candidate 1", "TBD - Candidate 2"] // Placeholders
+    "School Sister": ["TBD - Candidate 1", "TBD - Candidate 2"]
 };
 
-let positionKeys = Object.keys(positions);
+const positionKeys = Object.keys(positions);
 let currentIndex = 0;
-let selections = {};
+let selections = JSON.parse(localStorage.getItem("selections") || "{}");
+
+// 2. Jump-to-Edit Logic (Checks if we came from the Confirm page)
+const jumpTo = localStorage.getItem("jumpToPosition");
+if (jumpTo && positionKeys.includes(jumpTo)) {
+    currentIndex = positionKeys.indexOf(jumpTo);
+    localStorage.removeItem("jumpToPosition"); // Clear it so it doesn't loop
+}
 
 function renderPosition() {
-    let currentPos = positionKeys[currentIndex];
+    const currentPos = positionKeys[currentIndex];
     
-    // 2. Progress Indicator Calculation
-    let progressPercent = Math.round(((currentIndex) / positionKeys.length) * 100);
+    // Calculate Progress
+    const progressPercent = Math.round(((currentIndex) / positionKeys.length) * 100);
     
     let html = `
-        <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 25px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px;">
-                <span>Progress</span>
+                <span>Election Progress</span>
                 <span>${currentIndex + 1} of ${positionKeys.length}</span>
             </div>
-            <div style="width: 100%; background: #1e293b; height: 6px; border-radius: 10px; overflow: hidden;">
-                <div style="width: ${progressPercent}%; background: #38bdf8; height: 100%; transition: width 0.3s ease;"></div>
+            <div style="width: 100%; background: #1e293b; height: 8px; border-radius: 10px; overflow: hidden;">
+                <div style="width: ${progressPercent}%; background: var(--primary); height: 100%; transition: width 0.4s ease-out;"></div>
             </div>
         </div>
         
-        <p style="color: #38bdf8; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Currently Voting For:</p>
-        <h2 style="margin-bottom: 25px;">${currentPos}</h2>
+        <p style="color: var(--primary); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; font-weight: 700;">Select Candidate For:</p>
+        <h2 style="margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">${currentPos}</h2>
     `;
 
-    // Render Candidate Options
+    // Render Candidates
     positions[currentPos].forEach(name => {
+        // If they already voted for this person (in edit mode), check the radio button
+        const isChecked = (selections[currentPos] === name) ? "checked" : "";
+        
         html += `
         <label class="option">
-            <input type="radio" name="candidate" value="${name}">
+            <input type="radio" name="candidate" value="${name}" ${isChecked}>
             <span>${name}</span>
         </label>`;
     });
 
-    html += `<button onclick="next()" style="margin-top: 20px;">Continue</button>`;
+    html += `
+        <div style="margin-top: 30px;">
+            <button onclick="next()">
+                ${currentIndex === positionKeys.length - 1 ? "Review Ballot" : "Continue"}
+            </button>
+        </div>
+    `;
+    
     document.getElementById("votingCard").innerHTML = html;
 }
 
 function next() {
-    let selected = document.querySelector('input[name="candidate"]:checked');
+    const selected = document.querySelector('input[name="candidate"]:checked');
+    
     if (!selected) {
-        alert("Please select a candidate to proceed.");
+        alert("Please select a candidate to continue.");
         return;
     }
     
-    // Save selection
+    // Update local selections object
     selections[positionKeys[currentIndex]] = selected.value;
+    localStorage.setItem("selections", JSON.stringify(selections));
     
     currentIndex++;
     
     if (currentIndex < positionKeys.length) {
         renderPosition();
     } else {
-        // Save final selections to storage and move to confirmation
-        localStorage.setItem("selections", JSON.stringify(selections));
+        // Redirect to confirmation
         window.location.href = "confirm.html";
     }
 }
 
-// Initial render
+// Start the app
 renderPosition();
 </script>
 </body>

@@ -6,94 +6,43 @@
     <link rel="stylesheet" href="style.css">
     <style>
         .ballot-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255, 255, 255, 0.03); padding: 12px 20px;
+            border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .ballot-id {
-            font-family: 'Courier New', Courier, monospace;
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 0.85rem;
-        }
+        .ballot-id { font-family: monospace; color: var(--primary); font-weight: bold; }
 
         .receipt-area {
             background: rgba(15, 23, 42, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 10px 20px;
+            overflow: hidden;
             margin-bottom: 20px;
         }
         
         .confirm-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 4px solid transparent; transition: all 0.2s;
         }
-        .confirm-row:last-child { border-bottom: none; }
+        .confirm-row:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+        .confirm-row:hover { border-left: 4px solid var(--primary); background: rgba(56, 189, 248, 0.05); }
         
-        /* Left Alignment Logic */
-        .pos-info { 
-            flex: 1; 
-            min-width: 0; 
-            text-align: left; /* Aligns all text inside to the left */
-        }
-        
-        .action-area {
-            flex-shrink: 0;
-            padding-left: 20px;
-        }
-
-        .pos-label { 
-            color: var(--primary);
-            font-size: 0.85rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-bottom: 4px;
-            display: block;
-        }
-
-        .candidate-val { 
-            font-size: 1.15rem;
-            font-weight: 400;
-            color: #f8fafc;
-            /* Ensures name doesn't push the button away */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .final-warning {
-            background: rgba(251, 113, 133, 0.1);
-            border: 1px solid rgba(251, 113, 133, 0.2);
-            color: #fb7185;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            margin-top: 20px;
-            text-align: center;
-            font-weight: 500;
-        }
+        .pos-info { text-align: left; flex: 1; }
+        .pos-label { color: var(--text-muted); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .candidate-val { color: var(--primary); font-size: 1.1rem; font-weight: 600; }
 
         .edit-btn {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.05); color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 14px;
+            border-radius: 6px; font-size: 0.75rem; cursor: pointer; width: auto;
         }
-        .edit-btn:hover { background: var(--primary); color: #020617; }
+        .edit-btn:hover { background: var(--text-main); color: var(--bg-dark); }
+
+        .final-warning {
+            background: rgba(251, 113, 133, 0.1); border: 1px solid rgba(251, 113, 133, 0.2);
+            color: #fb7185; padding: 15px; border-radius: 12px; font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
@@ -109,31 +58,17 @@
             <span class="ballot-id" id="ballotToken">GENERATING...</span>
         </div>
 
-        <h2 style="margin-bottom: 10px; text-align: left;">Review Your Selection</h2>
-        
         <div class="receipt-area" id="receiptList"></div>
 
-        <div class="final-warning">
-            ⚠️ Note: Once you click submit, your choices are final and cannot be changed.
-        </div>
+        <div class="final-warning">⚠️ Note: Once submitted, your choices are final.</div>
 
         <button onclick="submitVote()" id="submitBtn" style="margin-top: 25px;">Cast My Final Vote</button>
     </div>
-
-    <footer>© 2026 NTIC-KANO SRC Elections</footer>
 </div>
 
 <script>
 const selections = JSON.parse(localStorage.getItem("selections") || "{}");
-
-function generateToken() {
-    const chars = "ABCDEF0123456789";
-    let token = "TX-";
-    for(let i=0; i<6; i++) {
-        token += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    document.getElementById("ballotToken").innerText = token;
-}
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkCp9J4GfAKK2GAyXKBo9suNhrL69ycyiq1dvDZ8iRY2WcTWrJ9ViGI9fJsGsQFVeT9Q/exec";
 
 function renderReceipt() {
     let html = "";
@@ -145,38 +80,44 @@ function renderReceipt() {
                 <div class="candidate-val">${selections[pos]}</div>
             </div>
             <div class="action-area">
-                <button class="edit-btn" onclick="goToEdit(this, '${pos}')">Change</button>
+                <button class="edit-btn" onclick="goToEdit('${pos}')">Change</button>
             </div>
         </div>`;
     }
     document.getElementById("receiptList").innerHTML = html;
 }
 
-function goToEdit(btn, posName) {
-    btn.innerText = "Opening...";
-    btn.style.opacity = "0.7";
+function goToEdit(posName) {
     localStorage.setItem("jumpToPosition", posName);
     localStorage.setItem("singleEditMode", "true"); 
-    setTimeout(() => { window.location.href = "vote.html"; }, 400);
+    window.location.href = "vote.html";
 }
 
-function submitVote() {
+async function submitVote() {
     const btn = document.getElementById("submitBtn");
-    btn.innerText = "Cast My Final Vote...";
+    btn.innerText = "Encrypting & Submitting...";
     btn.disabled = true;
 
-    setTimeout(() => {
-        let allVotes = JSON.parse(localStorage.getItem("allVotes") || "[]");
-        let voter = localStorage.getItem("currentVoter");
-        allVotes.push({voter: voter, selections: selections, timestamp: new Date()});
-        localStorage.setItem("allVotes", JSON.stringify(allVotes));
+    try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST", mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                voter: localStorage.getItem("currentVoter") || "Anonymous",
+                selections: selections
+            })
+        });
+
         localStorage.removeItem("selections");
-        localStorage.removeItem("currentVoter");
         window.location.href = "thankyou.html";
-    }, 1200);
+    } catch (e) {
+        alert("Submission failed. Check connection.");
+        btn.disabled = false;
+        btn.innerText = "Cast My Final Vote";
+    }
 }
 
-generateToken();
+document.getElementById("ballotToken").innerText = "TX-" + Math.random().toString(36).substr(2, 6).toUpperCase();
 renderReceipt();
 </script>
 </body>
